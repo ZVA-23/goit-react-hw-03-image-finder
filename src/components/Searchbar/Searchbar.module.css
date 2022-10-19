@@ -29,10 +29,10 @@
 
 .searchFormButton {
     display: inline-block;
-    width: 48px;
+    width: 88px;
     height: 48px;
     border: 0;
-    background-image: url('https://image.flaticon.com/icons/svg/149/149852.svg');
+    background-image: url("/src/images/icons-search.svg");
     background-size: 40%;
     background-repeat: no-repeat;
     background-position: center;
@@ -41,7 +41,7 @@
     cursor: pointer;
     outline: none;
 }
-
+/* src/images/icons-search.svg */
 .searchFormButton:hover {
     opacity: 1;
 }

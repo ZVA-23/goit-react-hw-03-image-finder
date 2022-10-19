@@ -14,10 +14,11 @@ export class SearchBar extends Component {
 
     handleSubmit = evt => {
         evt.preventDefault();
-        if (this.state.name.toLowerCase().trim() === '') {
+        const { name } = this.state;
+        if (name.toLowerCase().trim() === '') {
             return alert('You have to enter your request!')
         }
-        this.props.onSubmit(this.state.name);
+        this.props.onSubmit(name);
         this.setState({ name: '' });
         this.reset();
     }

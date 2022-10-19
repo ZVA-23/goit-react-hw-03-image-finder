@@ -20,10 +20,11 @@ export class Modal extends Component {
     window.removeEventListener('keydown', this.closeByEscape);
     }
     render() {
+        const { props: { src, alt }, closeByBackdrop } = this;
         return (
-            <div className={css.overlay} onClick={this.closeByBackdrop}>
+            <div className={css.overlay} onClick={closeByBackdrop}>
                 <div className={css.modal}>
-                    <img src={this.props.src} alt={this.props.alt} />
+                    <img src={src} alt={alt} />
                 </div>
             </div>
         )

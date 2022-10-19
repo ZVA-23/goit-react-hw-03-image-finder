@@ -1,3 +1,4 @@
+import Notiflix from 'notiflix';
 import { Component } from 'react';
 import { fetchApi } from 'utils/fetchApi';
 import { SearchBar } from './Searchbar/Searchbar';
@@ -13,10 +14,7 @@ export class App extends Component {
     images: [],
     perPage: 12,
     isLoading: false,
-    error: null,
-    totalHits: null,
     currentImage: null,
-    loadMore: false,
   }
 
   componentDidUpdate(_, prevState) {
@@ -38,13 +36,14 @@ export class App extends Component {
       return;
     }
     try {
-      // const { hits, totalHits } = await fetchApi(name, page);
-      const respons = await fetchApi(name, page);
-      console.log(respons);
-      // console.log(hits, totalHits);
+      const response = await fetchApi(name, page);
+      console.log(response)
+      if (!response.data.hits.length) {
+        Notiflix.Notify.failure('No images found!');
+      }
       this.setState(prevState => ({
-        images: [...prevState.images, ...respons.data.hits],
-        loadMore: this.state.page < Math.ceil(this.state.totalHits / this.state.perPage),
+        images: [...prevState.images, ...response.data.hits],
+        total: response.data.total,
       }));
     } catch (error) {
       this.setState({ error: error.message });
@@ -52,15 +51,16 @@ export class App extends Component {
       this.setState({ isLoading: false });
     }
   };
+
   handleImageSubmit = name => {
     this.setState({
       name,
       page: 1,
       images: [],
-      loadMore: false,
     });
   };
-    handleLoadMore = () => {
+
+  handleLoadMore = () => {
     this.setState(prevState => ({ page: prevState.page + 1 }));
     this.scrollTo();
     };
@@ -72,17 +72,33 @@ export class App extends Component {
   closeModal = () => {
     this.setState({ currentImage: null });
   };
-    render() {
+
+  render() {
+    const { state: {
+      isLoading,
+      name,
+      images,
+      total,
+      page,
+      perPage,
+      currentImage },
+      handleImageSubmit,
+      openModal,
+      handleLoadMore,
+      closeModal } = this;
     return (
       <>
-        <SearchBar onSubmit={this.handleImageSubmit} />
-        {this.state.isLoading ? (
-          <Loader />) : (
-          <ImageGallery images={this.state.images} openModal={this.openModal} />)}
-        {this.state.loadMore &&
-          <Button page={this.state.page} onLoadMore={this.handleLoadMore} />}
-        {this.state.currentImage &&
-          <Modal src={this.state.currentImage} closeModal={this.closeModal} />}       
+        <SearchBar onSubmit={handleImageSubmit} />
+
+        {isLoading && <Loader />}
+
+        {name && (<ImageGallery images={images} openModal={openModal} />)}
+        
+        {Math.ceil(total / page) > perPage &&
+          <Button onLoadMore={handleLoadMore} />}
+        
+        {currentImage &&
+          <Modal src={currentImage} closeModal={closeModal} />}           
       </>
     )
   }
