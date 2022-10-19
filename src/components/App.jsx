@@ -64,13 +64,11 @@ export class App extends Component {
     this.setState(prevState => ({ page: prevState.page + 1 }));
     this.scrollTo();
     };
-    // openModal = largeImageURL => {
-  //   console.log(largeImageURL);
-  //   this.setState({
-  //     showModal: true,
-  //     largeImageURL: largeImageURL,
-  //   });
-  // };
+
+  openModal = data => {
+    this.setState({ currentImage: data });
+  };
+
   closeModal = () => {
     this.setState({ currentImage: null });
   };
